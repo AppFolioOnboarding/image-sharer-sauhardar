@@ -8,6 +8,10 @@ class ImagesController < ActionController::Base
     redirect_to image_path(img.id)
   end
 
+  def show
+    @image = Image.find(params[:id])
+  end
+
   private
 
   def image_params
