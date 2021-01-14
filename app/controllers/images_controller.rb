@@ -1,4 +1,8 @@
 class ImagesController < ActionController::Base
+  def index
+    @images = Image.order(created_at: :desc)
+  end
+
   def create
     img = Image.create!(image_params)
     redirect_to image_path(img.id)
