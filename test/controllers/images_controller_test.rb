@@ -28,6 +28,10 @@ class ImagesControllerTest < ActionDispatch::IntegrationTest
 
     assert_select 'img' do
       assert_select '[src=?]', 'https://www.appfolio.com/images/html/apm-fb-logo.png'
+      assert_select '[width=?]', '400'
+    end
+  end
+
   test 'show images and submission link on index page' do
     Image.create(link: 'https://www.appfolio.com/images/html/apm-fb-logo.png')
     Image.create(link: 'https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/dog-puppy-on-garden-royalty-free-image-1586966191.jpg?crop=1.00xw:0.669xh;0,0.190xh&resize=640:*')
