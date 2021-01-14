@@ -1,6 +1,19 @@
 require 'test_helper'
 
 class ImagesControllerTest < ActionDispatch::IntegrationTest
+  test 'should get new page' do
+    get new_image_path
+    assert_response :success
+
+    assert_select 'h3', text: 'Submit a new image!'
+    assert_select 'form' do
+      assert_select 'div input', 1
+      assert_select 'input' do
+        assert_select '[type=?]', 'submit'
+      end
+    end
+  end
+
   test 'create an image' do
     assert_difference 'Image.count' do
       post images_path, params: { image: { link: 'https://www.appfolio.com/images/html/apm-fb-logo.png' } }

@@ -8,6 +8,10 @@ class ImagesController < ActionController::Base
     @image = Image.find(params[:id])
   end
 
+  def new
+    @image = Image.new
+  end
+
   private
 
   def image_params

@@ -1,0 +1,5 @@
+<h3>Submit a new image!</h3>
+<%= simple_form_for @image do |f| %>
+    <%= f.input :link, as: :url %>
+    <%= f.button :submit %>
+<% end %>
