@@ -4,7 +4,9 @@ class ImagesController < ActionController::Base
   end
 
   def create
-    img = Image.create!(image_params)
+    tag_list = image_params[:tag_list].split(',')
+    link = image_params[:link]
+    img = Image.create!(link: link, tag_list: tag_list)
     redirect_to image_path(img.id)
   end
 
@@ -19,6 +21,6 @@ class ImagesController < ActionController::Base
   private
 
   def image_params
-    params.require(:image).permit(:link)
+    params.require(:image).permit(:link, :tag_list)
   end
 end

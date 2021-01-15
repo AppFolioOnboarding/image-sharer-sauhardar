@@ -14,11 +14,30 @@ class ImagesControllerTest < ActionDispatch::IntegrationTest
     end
   end
 
-  test 'create an image' do
+  test 'create an image without tags' do
     assert_difference 'Image.count' do
-      post images_path, params: { image: { link: 'https://www.appfolio.com/images/html/apm-fb-logo.png' } }
+      post images_path, params: {
+        image: {
+          link: 'https://www.appfolio.com/images/html/apm-fb-logo.png',
+          tag_list: ''
+        }
+      }
       assert_redirected_to image_path(Image.last)
     end
+  end
+
+  test 'create an image with tags' do
+    assert_difference 'Image.count' do
+      post images_path, params: {
+        image: {
+          link: 'https://www.appfolio.com/images/html/apm-fb-logo.png',
+          tag_list: 'tag1, tag2'
+        }
+      }
+      assert_redirected_to image_path(Image.last)
+    end
+    img_tags = Image.last.tag_list
+    assert_equal img_tags.length, 2
   end
 
   test 'should show an image' do
