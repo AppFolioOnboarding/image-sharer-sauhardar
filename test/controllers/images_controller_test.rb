@@ -7,7 +7,7 @@ class ImagesControllerTest < ActionDispatch::IntegrationTest
 
     assert_select 'h3', text: 'Submit a new image!'
     assert_select 'form' do
-      assert_select 'div input', 1
+      assert_select 'div input', 2
       assert_select 'input' do
         assert_select '[type=?]', 'submit'
       end
