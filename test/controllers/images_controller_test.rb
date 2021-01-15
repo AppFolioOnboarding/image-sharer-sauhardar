@@ -90,7 +90,7 @@ class ImagesControllerTest < ActionDispatch::IntegrationTest
     end
 
     expected_tag_text = [
-      'Tags:tag1,tag2',
+      'Tags:tag1tag2',
       'Tags:',
       'Tags:',
       'Tags:'
@@ -98,5 +98,62 @@ class ImagesControllerTest < ActionDispatch::IntegrationTest
 
     p_tags_arr = css_select('p')
     assert_equal p_tags_arr.map { |p_tag| p_tag.text.delete(' ').delete("\n") }, expected_tag_text
+  end
+
+  test 'All tags are shown and clickable' do
+    Image.create(link: 'https://www.appfolio.com/images/html/apm-fb-logo.png')
+    Image.create(link: 'https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/dog-puppy-on-garden-royalty-free-image-1586966191.jpg?crop=1.00xw:0.669xh;0,0.190xh&resize=640:*')
+    Image.create(link: 'https://cf.ltkcdn.net/dogs/images/orig/235430-2000x1332-australian-shepherd-puppy.jpg')
+    Image.create(link: 'https://cf.ltkcdn.net/dogs/images/orig/235430-2000x1332-australian-shepherd-puppy.jpg',
+                 tag_list: %w[tag1 tag2 tag10])
+
+    get images_path
+    assert_response :success
+
+    assert_select 'div.tags-container a', 4
+
+    expected_tag_text = %w[
+      allimages
+      tag1
+      tag2
+      tag10
+    ]
+
+    a_tags_arr = css_select('div.tags-container>a')
+    assert_equal a_tags_arr.map { |a_tag| a_tag.text.delete(' ').delete("\n") }, expected_tag_text
+  end
+
+  test 'Tag with a space' do
+    Image.create(link: 'https://www.appfolio.com/images/html/apm-fb-logo.png', tag_list: ['San Diego'])
+
+    get images_path
+    assert_response :success
+
+    assert_select 'a' do |elements|
+      assert_equal '/images?tag=San+Diego', elements[2].attr('href')
+      assert_equal '/images?tag=San+Diego', elements[3].attr('href')
+    end
+  end
+
+  test 'All images on the page have the correct tag' do
+    Image.create(link: 'https://www.appfolio.com/images/html/1apm-fb-logo.png', tag_list: %w[tag1 randomTag])
+    Image.create(link: 'https://www.appfolio.com/images/html/2apm-fb-logo.png', tag_list: %w[abcd])
+    Image.create(link: 'https://www.appfolio.com/images/html/3apm-fb-logo.png', tag_list: %w[efgh tag2 tag1])
+    Image.create(link: 'https://www.appfolio.com/images/html/4apm-fb-logo.png', tag_list: %w[tag1 tag2 tag10])
+
+    get images_path, params: { tag: 'tag1' }
+    assert_response :success
+
+    assert_select '[src=?]', 'https://www.appfolio.com/images/html/1apm-fb-logo.png', count: 1
+    assert_select '[src=?]', 'https://www.appfolio.com/images/html/3apm-fb-logo.png', count: 1
+    assert_select '[src=?]', 'https://www.appfolio.com/images/html/4apm-fb-logo.png', count: 1
+  end
+
+  test 'No images shown when there are no images with the given tag' do
+    get images_path, params: { tag: 'tag1' }
+    assert_response :success
+
+    assert_select 'img', count: 0
+    assert_select 'p', text: 'No images tagged with tag1!'
   end
 end
