@@ -3,5 +3,8 @@
 <% @images.each do |img|%>
   <div>
     <%= image_tag(img.link,width:'400')  %>
+    <p>Tags: 
+      <%= img.tag_list %>
+    </p>
   </div>
 <% end %>
