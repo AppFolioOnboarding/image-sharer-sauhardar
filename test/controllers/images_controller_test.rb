@@ -40,7 +40,7 @@ class ImagesControllerTest < ActionDispatch::IntegrationTest
     assert_equal img_tags.length, 2
   end
 
-  test 'should show an image' do
+  test 'should show an image without tags' do
     created_image = Image.create(link: 'https://www.appfolio.com/images/html/apm-fb-logo.png')
     get image_path(created_image.id)
     assert_response :success
@@ -49,6 +49,22 @@ class ImagesControllerTest < ActionDispatch::IntegrationTest
       assert_select '[src=?]', 'https://www.appfolio.com/images/html/apm-fb-logo.png'
       assert_select '[width=?]', '400'
     end
+    p_tag = css_select('p')
+    assert_equal p_tag.text.strip, 'Tags:'
+  end
+
+  test 'should show an image with tags' do
+    created_image = Image.create(link: 'https://www.appfolio.com/images/html/apm-fb-logo.png',
+                                 tag_list: %w[tag1 tag2])
+    get image_path(created_image.id)
+    assert_response :success
+
+    assert_select 'img' do
+      assert_select '[src=?]', 'https://www.appfolio.com/images/html/apm-fb-logo.png'
+      assert_select '[width=?]', '400'
+    end
+    p_tag = css_select('p')
+    assert_equal p_tag.text.delete(' ').delete("\n"), 'Tags:tag1,tag2'
   end
 
   test 'show images and submission link on index page' do
