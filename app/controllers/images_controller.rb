@@ -1,6 +1,6 @@
 class ImagesController < ActionController::Base
   def index
-    @image = Image.new
+    @images = Image.order(created_at: :desc)
   end
 
   def create
@@ -10,6 +10,10 @@ class ImagesController < ActionController::Base
 
   def show
     @image = Image.find(params[:id])
+  end
+
+  def new
+    @image = Image.new
   end
 
   private

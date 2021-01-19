@@ -1,6 +1,7 @@
-<h1>Images#index</h1>
-<p>Find me in app/views/images/index.html.erb</p>
-<%= simple_form_for @image do |f| %>
-    <%= f.input :link, as: :url %>
-    <%= f.button :submit %>
+<h3>All uploaded images:</h3>
+<a href="/images/new">Submit a new image here</a>
+<% @images.each do |img|%>
+  <div>
+    <%= image_tag(img.link,width:'400')  %>
+  </div>
 <% end %>
