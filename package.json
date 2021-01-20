@@ -10,7 +10,8 @@
     "prop-types": "^15.6.1",
     "react": "^16.8.4",
     "react-dom": "^16.8.4",
-    "reactstrap": "^8.8.1"
+    "reactstrap": "^8.8.1",
+    "whatwg-fetch": "^3.5.0"
   },
   "devDependencies": {
     "assert": "^1.4.1",

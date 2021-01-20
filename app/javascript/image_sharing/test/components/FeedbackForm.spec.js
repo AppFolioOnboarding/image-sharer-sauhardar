@@ -2,8 +2,10 @@
 
 import assert from 'assert';
 import { mount, shallow } from 'enzyme';
+import sinon from 'sinon';
 import React from 'react';
 import FeedbackForm from '../../components/FeedbackForm';
+import * as helper from '../../utils/helper';
 
 describe('<FeedbackForm />', () => {
   it('should render correctly', () => {
@@ -38,5 +40,40 @@ describe('<FeedbackForm />', () => {
       });
       assert.strictEqual(wrapper.find('FormGroup').at(i).find('Input').prop('value'), changedText);
     });
+  });
+
+  it('should display a success/failure message on submission', () => {
+    const wrapper = mount(<FeedbackForm />);
+    const formGroups = wrapper.find('FormGroup');
+    const changedText = 'foo';
+    formGroups.forEach((form, i) => {
+      form.find('Input').simulate('change', {
+        target: {
+          value: changedText
+        }
+      });
+      assert.strictEqual(wrapper.find('FormGroup').at(i).find('Input').prop('value'), changedText);
+    });
+    const buttons = wrapper.find('Button');
+    assert.strictEqual(buttons.length, 1);
+
+    const postStub = sinon.stub(helper, 'post').resolves({
+      status: 'success',
+      feedback: {
+        name: 'John Smith',
+        comments: 'Great work.'
+      }
+    });
+
+    buttons.simulate('click');
+    assert.strictEqual(wrapper.find('Alert').length, 1);
+
+    assert(postStub.calledWithExactly('/api/feedbacks', {
+      feedback: {
+        name: 'foo',
+        comments: 'foo'
+      }
+    }));
+    assert.strictEqual(wrapper.find('Alert').prop('color'), 'success');
   });
 });
