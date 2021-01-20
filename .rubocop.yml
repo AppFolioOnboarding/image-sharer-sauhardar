@@ -6,7 +6,7 @@ AllCops:
     - 'vendor/**/*'
     - 'node_modules/**/*'
     - 'bin/*'
-  TargetRubyVersion: 2.5
+  TargetRubyVersion: 2.5.1
 
 Layout/IndentArray:
   EnforcedStyle: consistent
@@ -19,6 +19,9 @@ Layout/MultilineMethodCallIndentation:
 
 Metrics/LineLength:
   Max: 112  # Maximum line length from `rails new`
+
+Metrics/MethodLength:
+  Max: 15
 
 Rails:
   Enabled: true
