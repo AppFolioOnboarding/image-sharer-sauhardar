@@ -23,5 +23,7 @@
         </a>
       <% end %>
     </p>
+    <%= button_to 'Delete', image_path(img.id), method: :delete%>
   </div>
 <% end %>
+<%= javascript_pack_tag 'deleteImage'%>

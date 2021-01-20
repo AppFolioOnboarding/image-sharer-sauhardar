@@ -84,8 +84,16 @@ class ImagesControllerTest < ActionDispatch::IntegrationTest
 
     assert_select 'div img', 4
     assert_select 'div' do
-      assert 'img' do
+      assert_select 'img' do
         assert_select '[width=?]', '400'
+      end
+      assert_select 'form' do
+        assert_select '[class=?]', 'button_to'
+        assert_select '[method=?]', 'post'
+        assert_select 'input' do
+          assert_select '[type=?]', 'submit'
+          assert_select '[value=?]', 'Delete'
+        end
       end
     end
 
@@ -155,5 +163,15 @@ class ImagesControllerTest < ActionDispatch::IntegrationTest
 
     assert_select 'img', count: 0
     assert_select 'p', text: 'No images tagged with tag1!'
+  end
+
+  test 'Delete image' do
+    img_to_delete = Image.create(link: 'https://www.appfolio.com/images/html/4apm-fb-logo.png',
+                                 tag_list: %w[tag1 tag2 tag10])
+
+    assert_difference 'Image.count', -1 do
+      delete image_path(img_to_delete.id)
+      assert_redirected_to images_path
+    end
   end
 end
