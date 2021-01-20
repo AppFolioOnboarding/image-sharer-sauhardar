@@ -1,6 +1,12 @@
 class ImagesController < ActionController::Base
   def index
-    @images = Image.order(created_at: :desc)
+    @all_tags = ActsAsTaggableOn::Tag.all.map(&:name)
+    @query_param_tag = params[:tag]
+    @images = if params.key?(:tag)
+                Image.tagged_with([@query_param_tag], any: true).order(created_at: :desc)
+              else
+                Image.order(created_at: :desc)
+              end
   end
 
   def create

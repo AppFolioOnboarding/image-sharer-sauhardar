@@ -1,10 +1,27 @@
 <h3>All uploaded images:</h3>
 <a href="/images/new">Submit a new image here</a>
+<div class="tags-container">
+  <a href="/images">
+    all images
+    </a>
+  <% @all_tags.each do |tag|%>
+    <a href=<%= "/images?#{tag.to_query(:tag)}" %>>
+      <%= tag %>
+    </a>
+  <% end %>
+</div>
+<% if @images.length == 0 %>
+  <p> No images tagged with <%= @query_param_tag %>! </p> 
+<% end %>
 <% @images.each do |img|%>
   <div>
     <%= image_tag(img.link,width:'400')  %>
     <p>Tags: 
-      <%= img.tag_list %>
+      <% img.tags.each do |tag| %>
+        <a href=<%= "/images?#{tag.name.to_query(:tag)}"%>>
+          <%= tag %>
+        </a>
+      <% end %>
     </p>
   </div>
 <% end %>
